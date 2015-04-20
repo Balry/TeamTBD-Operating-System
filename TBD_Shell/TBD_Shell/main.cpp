@@ -3,8 +3,7 @@ using namespace std;
 
 int main()
 {
-	Shell shell;
-	shell.CommanLineInterface();
-	return 0;
+	Shell myshell;
+	myshell.CommanLineInterface();
 	return 0;
 }

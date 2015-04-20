@@ -11,10 +11,9 @@ public:
 	void CommanLineInterface()
 	{
 		std::string command;
-		output(">");
 		do
 		{
-
+			output(">");
 			command = CommandInput();
 			std::string result = transducer(command);
 			output(result);

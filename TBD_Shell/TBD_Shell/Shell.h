@@ -2,7 +2,6 @@
 #include <sstream>
 #include <vector>
 #include "Kernel.h"
-#include <vector>
 #pragma once
 
 class Shell

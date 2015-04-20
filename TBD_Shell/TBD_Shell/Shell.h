@@ -128,7 +128,14 @@ private:
 		}
 
 	}
-	std::string quit();
+	std::string quit()
+	{
+		mykenrel.Set_Register0(0);
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register1() != 0)
+			throw mykenrel.Get_Register1();
+		return "Exited program";
+	}
 	std::string fileContents(std::string fileName);
 	std::string systemInfo();
 	std::string makeDir(std::string dirName)

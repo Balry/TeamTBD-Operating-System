@@ -76,11 +76,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Dropbox\School\Spring 2015\OS\Kernel 30Mar2015\Kernel\Kernel.cpp" />
+    <ClCompile Include="Kernel.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Dropbox\School\Spring 2015\OS\Kernel 30Mar2015\Kernel\Kernel.h" />
+    <ClInclude Include="Kernel.h" />
     <ClInclude Include="Shell.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

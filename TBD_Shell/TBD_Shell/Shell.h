@@ -96,8 +96,7 @@ private:
 		{
 			throw mykenrel.Get_Register3();
 		}
-		//return mykenrel.Get_Register1();
-		
+		return intToString(mykenrel.Get_Register1());
 	}
 	std::string changeDir(std::string newDir);
 	std::string copyFile(std::string fileName, std::string destination);
@@ -146,5 +145,19 @@ private:
 		}
 		std::string result = "Moved to new directory";
 		return result;
+
 	}
+	
+	//Auxiliary
+	std::string intToString(int x)
+	{
+		std::string result;
+		char temp[256];
+		//itoa(x,temp,10);
+		//_itoa(x,temp,10);
+		_itoa_s(x, temp, 255, 10);
+		result = temp;
+		return result;
+	}
+
 };

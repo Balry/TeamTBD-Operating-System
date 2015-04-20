@@ -1,4 +1,6 @@
 #include <string>
+#include <sstream>
+#include <vector>
 #include "Kernel.h"
 #pragma once
 
@@ -32,5 +34,25 @@ private:
 	}
 	std::string transducer(std::string command);
 	void output(std::string);
+
+	std::vector<std::string> makeToken(std::string com)
+	{
+		std::vector<std::string> vs;
+		std::string s;
+		std::istringstream is(com);
+		while (!is.eof())
+		{
+			if (vs.size == 0)
+			{
+				getline(is, s, ' ');
+			}
+			else
+			{
+				getline(is, s, ';');
+			}
+			vs.push_back(s);
+		}
+		return vs;
+	}
 
 };

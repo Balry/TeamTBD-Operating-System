@@ -273,10 +273,10 @@ private:
 		return vs;
 	}
 
-	std::string changeDir(std::string name)
+	std::string changeDir(std::string newDir)
 	{
 		mykenrel.Set_Register0(4);
-		mykenrel.Set_Register1(name);
+		mykenrel.Set_Register1(newDir);
 		mykenrel.changedir();
 		if (mykenrel.GetRegister3() != 0)
 		{

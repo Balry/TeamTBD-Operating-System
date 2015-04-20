@@ -101,14 +101,13 @@ private:
 	}
 	std::string getDir(std::string dir)
 	{
-		mykenrel.Set_Register0(12);
+		mykenrel.Set_Register0(13);
 		mykenrel.System_Call();
 		if (mykenrel.Get_Register3() != 0)
 		{
 			throw mykenrel.Get_Register3();
 		}
-		//return mykenrel.Get_Register1();
-		
+		return intToString(mykenrel.Get_Register1());
 	}
 	std::string changeDir(std::string newDir);
 	std::string copyFile(std::string fileName, std::string destination)
@@ -164,9 +163,30 @@ private:
 
 		return "File Copied";
 	}
-	std::string quit();
+	std::string quit()
+	{
+		mykenrel.Set_Register0(0);
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register1() != 0)
+			throw mykenrel.Get_Register1();
+		return "Exited program";
+	}
 	std::string fileContents(std::string fileName);
-	std::string systemInfo();
+	std::string systemInfo()
+	{
+		mykenrel.Set_Register0(15); //Set Register 0 = 15
+		mykenrel.System_Call(); //call SystemCall() function
+		if (mykenrel.Get_Register3() != 0) //If Register3 is not 0
+		{
+			throw mykenrel.Get_Register3(); //throw value in Register 3
+		}
+		std::string result = "Date ";
+		result += (char*)mykenrel.Get_Register1();
+		result += "time";
+		result += (char*)mykenrel.Get_Register2();
+		return result; //return contents of register 1 & 2 as strings
+		
+	}
 	std::string makeDir(std::string dirName)
 	{
 		std::string results;
@@ -176,7 +196,16 @@ private:
 		if (mykenrel.Get_Register3() != 0)throw(101);
 		results = dirName + " Created";
 	}
-	std::string deleteFile(std::string fileName);
+	std::string deleteFile(std::string fileName)
+	{
+		mykenrel.Set_Register0(12);
+		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.System_Call();
+		if(mykenrel.Get_Register3() != 0)
+			throw mykenrel.Get_Register3();
+		return "File deleted";
+
+	}
 	void output(std::string out)
 	{
 		for (int i = 0; i < out.length - 1; i++)
@@ -217,5 +246,19 @@ private:
 		}
 		std::string result = "Moved to new directory";
 		return result;
+
 	}
+	
+	//Auxiliary
+	std::string intToString(int x)
+	{
+		std::string result;
+		char temp[256];
+		//itoa(x,temp,10);
+		//_itoa(x,temp,10);
+		_itoa_s(x, temp, 255, 10);
+		result = temp;
+		return result;
+	}
+
 };

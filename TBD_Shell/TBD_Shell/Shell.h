@@ -85,7 +85,20 @@ private:
 		}
 		catch (int e)
 		{
-
+			switch (e)
+			{
+			case(99):
+				output("Invalid Parameters");
+				break;
+			case(100) :
+				output("Invalid Command");
+				break;
+			case(101) :
+				output("Error");
+				break;
+			default:
+				break;
+			}
 		}
 	}
 	std::string getDir(std::string dir)
@@ -100,11 +113,34 @@ private:
 		
 	}
 	std::string changeDir(std::string newDir);
-	std::string copyFile(std::string fileName, std::string destination);
+	std::string copyFile(std::string fileName, std::string destination)
+	{
+		mykenrel.Set_Register0(7);
+		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register3() != 0)throw (101);
+		FILE* myfile = (FILE*)mykenrel.Get_Register1();
+		std::string fileContent;
+		while (!feof(myfile))
+		{
+			mykenrel.Set_Register0(9);
+			mykenrel.Set_Register1(myfile);
+
+		}
+
+	}
 	std::string quit();
 	std::string fileContents(std::string fileName);
 	std::string systemInfo();
-	std::string makeDir(std::string dirName);
+	std::string makeDir(std::string dirName)
+	{
+		std::string results;
+		mykenrel.Set_Register0(3);
+		mykenrel.Set_Register1(dirName.c_str);
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register3() != 0)throw(101);
+		results = dirName + " Created";
+	}
 	std::string deleteFile(std::string fileName);
 	void output(std::string out)
 	{

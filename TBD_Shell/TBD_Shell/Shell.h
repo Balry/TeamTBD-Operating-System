@@ -134,4 +134,17 @@ private:
 		}
 		return vs;
 	}
+
+	std::string changeDir(std::string name)
+	{
+		mykenrel.Set_Register0(4);
+		mykenrel.Set_Register1(name);
+		mykenrel.changedir();
+		if (mykenrel.GetRegister3() != 0)
+		{
+			throw mykenrel.getRegister3();
+		}
+		std::string result = "Moved to new directory";
+		return result;
+	}
 };

@@ -146,7 +146,7 @@ void kernel::Return_Current_Directory()
 }
 void kernel::outputDisplay()
 {
-	std::cout<< (char)register1<<std::endl;
+	std::cout<< (char)register1;
 	register3 = 0;
 	
 }

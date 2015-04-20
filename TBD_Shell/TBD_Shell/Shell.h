@@ -109,8 +109,7 @@ private:
 		{
 			throw mykenrel.Get_Register3();
 		}
-		//return mykenrel.Get_Register1();
-		
+		return intToString(mykenrel.Get_Register1());
 	}
 	std::string changeDir(std::string newDir);
 	std::string copyFile(std::string fileName, std::string destination)
@@ -182,22 +181,19 @@ private:
 		}
 		std::string result = "Moved to new directory";
 		return result;
-	}
 
-	std::string display_system_date_and_time()
+	}
+	
+	//Auxiliary
+	std::string intToString(int x)
 	{
-		mykenrel.Set_Register0(15); //Set Register 0 = 15
-		mykenrel.System_Call(); //call SystemCall() function
-		if (mykenrel.Get_Register3() != 0) //If Register3 is not 0
-		{
-			throw mykenrel.Get_Register3(); //throw value in Register 3
-		}
-		std::string result = "Date ";
-		result += (char*)mykenrel.Get_Register1();
-		result += "time";
-		result +=(char*)mykenrel.Get_Register2();
+		std::string result;
+		char temp[256];
+		//itoa(x,temp,10);
+		//_itoa(x,temp,10);
+		_itoa_s(x, temp, 255, 10);
+		result = temp;
 		return result;
-		//return contents of register 1 & 2 as strings
 	}
 
 };

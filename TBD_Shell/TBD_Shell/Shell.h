@@ -24,15 +24,15 @@ private:
 	std::string CommandInput()
 	{
 		std::string result;
-		char* temp="";
+		char temp='\0';
 		do
 		{
 			mykenrel.Set_Register0(1);
 			mykenrel.Set_Register2(temp);
 			mykenrel.System_Call();
-			temp = (char*)mykenrel.Get_Register1();
+			temp = (char)mykenrel.Get_Register1();
 			result += temp;
-		} while (temp != 0);
+		} while (temp != '\n');
 		return result;
 	}
 
@@ -44,13 +44,13 @@ private:
 			std::vector<std::string>token = makeToken(command);
 			if (token[0] == "dir")
 			{
-				result = getDir(token[1]);
+				result += getDir(token[1]);
 			}
 			else if (token[0] == "cd")
 			{
 				if (token.size() == 2)
 				{
-					result = changeDir(token[1]);
+					result += changeDir(token[1]);
 				}
 				else throw(99);
 			}
@@ -58,34 +58,38 @@ private:
 			{
 				if (token.size() == 3)
 				{
-					result = copyFile(token[1], token[2]);
+					result += copyFile(token[1], token[2]);
 				}
 				else throw(99);
 			}
 			else if (token[0] == "delete")
 			{
-				if (token.size() == 2){ result = deleteFile(token[1]); }
+				if (token.size() == 2){ result += deleteFile(token[1]); }
 				else throw(99);
 			}
 			else if (token[0] == "mkdir")
 			{
-				if (token.size() == 2){ result = makeDir(token[1]); }
+				if (token.size() == 2){ result += makeDir(token[1]); }
 				else throw(99);
 			}
 			else if (token[0] == "dstat")
 			{
-				result = systemInfo();
+				result += systemInfo();
 			}
 			else if (token[0] == "dfile")
 			{
-				if (token.size() == 2){ result = fileContents(token[1]); }
+				if (token.size() == 2){ result += fileContents(token[1]); }
 				else throw(99);
 			}
 			else if (token[0] == "quit")
 			{
-				result = quit();
+				result += quit();
 			}
-			else throw (100);
+			else
+			{
+				result += "Commands are: dir,cd,copy,delete,mkdir,dstat,dfile,quit\n";
+				throw (100);
+			}
 			return result;
 		}
 		catch (int e)
@@ -93,13 +97,13 @@ private:
 			switch (e)
 			{
 			case(99):
-				output("Invalid Parameters");
+				output("Invalid Parameters\n");
 				break;
 			case(100) :
-				output("Invalid Command");
+				output("Invalid Command\n");
 				break;
 			default:
-				output("System Error");
+				output("System Error\n");
 				break;
 			}
 		}
@@ -161,7 +165,7 @@ private:
 		e = mykenrel.Get_Register3();
 		if (e != 0)throw(e);
 		myfile = (FILE*)mykenrel.Get_Register1();
-		for (int i = 0; i < fileContent.length() - 1;i++)
+		for (int i = 0; i < fileContent.length();i++)
 		{
 			mykenrel.Set_Register0(10);
 			mykenrel.Set_Register1(fileContent[i]);
@@ -261,7 +265,7 @@ private:
 	}
 	void output(std::string out)
 	{
-		for (int i = 0; i < out.length() - 1; i++)
+		for (int i = 0; i < out.length(); i++)
 		{
 			mykenrel.Set_Register0(2);
 			mykenrel.Set_Register1(out[i]);

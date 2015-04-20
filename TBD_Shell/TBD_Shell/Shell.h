@@ -31,7 +31,7 @@ private:
 			mykenrel.Set_Register2(temp);
 			mykenrel.System_Call();
 			temp = (char)mykenrel.Get_Register1();
-			result += temp;
+			if(temp!='\n')result += temp;
 		} while (temp != '\n');
 		return result;
 	}
@@ -42,9 +42,9 @@ private:
 		{
 			std::string result;
 			std::vector<std::string>token = makeToken(command);
-			if (token[0] == "dir")
+			if (token[0]=="dir")
 			{
-				result += getDir(token[1]);
+				result += getDir();
 			}
 			else if (token[0] == "cd")
 			{
@@ -120,7 +120,7 @@ private:
 		std::string result = "Moved to new directory";
 		return result;
 	}
-	std::string getDir(std::string dir)
+	std::string getDir()
 	{
 		mykenrel.Set_Register0(13);
 		mykenrel.System_Call();

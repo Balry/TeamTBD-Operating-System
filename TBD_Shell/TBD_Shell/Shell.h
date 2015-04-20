@@ -145,7 +145,7 @@ private:
 		e = mykenrel.Get_Register3();
 		if (e != 0)throw(e);
 		myfile = (FILE*)mykenrel.Get_Register1();
-		for (int i = 0; i < fileContent.length - 1;i++)
+		for (int i = 0; i < fileContent.length() - 1;i++)
 		{
 			mykenrel.Set_Register0(10);
 			mykenrel.Set_Register1(fileContent[i]);
@@ -274,7 +274,7 @@ private:
 	std::string changeDir(std::string newDir)
 	{
 		mykenrel.Set_Register0(4);
-		mykenrel.Set_Register1(newDir.c_str);
+		mykenrel.Set_Register1(newDir.c_str());
 		mykenrel.System_Call();
 		if (mykenrel.Get_Register3() != 0)
 		{

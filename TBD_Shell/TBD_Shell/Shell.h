@@ -88,7 +88,17 @@ private:
 
 		}
 	}
-	std::string getDir(std::string dir);
+	std::string getDir(std::string dir)
+	{
+		mykenrel.Set_Register0(12);
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register3() != 0)
+		{
+			throw mykenrel.Get_Register3();
+		}
+		//return mykenrel.Get_Register1();
+		
+	}
 	std::string changeDir(std::string newDir);
 	std::string copyFile(std::string fileName, std::string destination);
 	std::string quit();

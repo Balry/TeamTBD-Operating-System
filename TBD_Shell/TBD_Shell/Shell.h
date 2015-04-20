@@ -13,6 +13,7 @@ public:
 		std::string command;
 		do
 		{
+			output(">");
 			command = CommandInput();
 			std::string result = transducer(command);
 			output(result);
@@ -93,17 +94,15 @@ private:
 			case(100) :
 				output("Invalid Command");
 				break;
-			case(101) :
-				output("Error");
-				break;
 			default:
+				output("System Error");
 				break;
 			}
 		}
 	}
 	std::string getDir(std::string dir)
 	{
-		mykenrel.Set_Register0(12);
+		mykenrel.Set_Register0(13);
 		mykenrel.System_Call();
 		if (mykenrel.Get_Register3() != 0)
 		{
@@ -114,19 +113,56 @@ private:
 	std::string changeDir(std::string newDir);
 	std::string copyFile(std::string fileName, std::string destination)
 	{
+		//open file
 		mykenrel.Set_Register0(7);
 		mykenrel.Set_Register1(fileName.c_str);
 		mykenrel.System_Call();
-		if (mykenrel.Get_Register3() != 0)throw (101);
+		int e = mykenrel.Get_Register3();
+		if (e != 0)throw (e);
 		FILE* myfile = (FILE*)mykenrel.Get_Register1();
-		std::string fileContent;
+		//read file contents
+		std::string fileContent="";
 		while (!feof(myfile))
 		{
 			mykenrel.Set_Register0(9);
 			mykenrel.Set_Register1(myfile);
+			mykenrel.System_Call();
+			fileContent+=mykenrel.Get_Register2();
+		}
+		//close file
+		mykenrel.Set_Register0(11);
+		mykenrel.Set_Register1(myfile);
+		mykenrel.System_Call();
+		e = mykenrel.Get_Register3();
+		if (e != 0)throw(e);
+		
+		//change dir
+		changeDir(destination);
 
+		//create file and write file
+		mykenrel.Set_Register0(8);
+		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.System_Call();
+		e = mykenrel.Get_Register3();
+		if (e != 0)throw(e);
+		myfile = (FILE*)mykenrel.Get_Register1();
+		for (int i = 0; i < fileContent.length - 1;i++)
+		{
+			mykenrel.Set_Register0(10);
+			mykenrel.Set_Register1(fileContent[i]);
+			mykenrel.System_Call();
+			e = mykenrel.Get_Register3();
+			if (e != 0)throw(e);
 		}
 
+		//close file
+		mykenrel.Set_Register0(11);
+		mykenrel.Set_Register1(myfile);
+		mykenrel.System_Call();
+		e = mykenrel.Get_Register3();
+		if (e!= 0)throw(e);
+
+		return "File Copied";
 	}
 	std::string quit()
 	{
@@ -198,7 +234,16 @@ private:
 		if (mykenrel.Get_Register3() != 0)throw(101);
 		results = dirName + " Created";
 	}
-	std::string deleteFile(std::string fileName);
+	std::string deleteFile(std::string fileName)
+	{
+		mykenrel.Set_Register0(12);
+		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.System_Call();
+		if(mykenrel.Get_Register3() != 0)
+			throw mykenrel.Get_Register3();
+		return "File deleted";
+
+	}
 	void output(std::string out)
 	{
 		for (int i = 0; i < out.length - 1; i++)

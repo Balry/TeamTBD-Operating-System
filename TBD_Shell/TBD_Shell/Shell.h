@@ -147,4 +147,21 @@ private:
 		std::string result = "Moved to new directory";
 		return result;
 	}
+
+	std::string display_system_date_and_time()
+	{
+		mykenrel.Set_Register0(15); //Set Register 0 = 15
+		mykenrel.System_Call(); //call SystemCall() function
+		if (mykenrel.Get_Register3() != 0) //If Register3 is not 0
+		{
+			throw mykenrel.Get_Register3(); //throw value in Register 3
+		}
+		std::string result = "Date ";
+		result += (char*)mykenrel.Get_Register1();
+		result += "time";
+		result +=(char*)mykenrel.Get_Register2();
+		return result;
+		//return contents of register 1 & 2 as strings
+	}
+
 };

@@ -136,7 +136,44 @@ private:
 			throw mykenrel.Get_Register1();
 		return "Exited program";
 	}
-	std::string fileContents(std::string fileName);
+	std::string fileContents(std::string fileName)
+	{
+		mykenrel.Set_Register0(7); //open file to read content
+		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.System_Call();
+		std::string filecontent;
+		if (mykenrel.Get_Register3() != 0)
+		{
+			throw mykenrel.Get_Register3();
+		}
+				
+		FILE* file;
+				
+			do
+			{								//read file contents
+				mykenrel.Set_Register0(9);
+				mykenrel.Set_Register1(file);
+				mykenrel.System_Call();
+				if (mykenrel.Get_Register3 != 0)
+				{
+					throw mykenrel.Get_Register3();
+				}
+					
+					
+				filecontent = (char*)mykenrel.Get_Register1();
+			} while (!EOF);
+
+			mykenrel.Set_Register0(11);
+			mykenrel.Set_Register1(file);
+			
+			mykenrel.System_Call();
+			if (mykenrel.Get_Register3() != 0)
+			{
+				throw mykenrel.Get_Register3();
+			}
+
+			return filecontent;
+	}
 	std::string systemInfo()
 	{
 		mykenrel.Set_Register0(15); //Set Register 0 = 15

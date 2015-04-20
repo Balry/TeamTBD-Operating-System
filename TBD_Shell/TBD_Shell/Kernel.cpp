@@ -86,9 +86,6 @@ void kernel::System_Call()
 	case(2) :
 		outputDisplay();
 		break;
-	case(16) :
-		outputInt();
-		break;
 	case(3) :
 		creatdir();
 		break;
@@ -152,11 +149,6 @@ void kernel::outputDisplay()
 	std::cout<< (char)register1<<std::endl;
 	register3 = 0;
 	
-}
-
-void kernel::outputInt()
-{
-	std::cout << register1 << std::endl;
 }
 void kernel::input()
 {

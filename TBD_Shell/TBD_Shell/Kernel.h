@@ -11,7 +11,6 @@ private:
 	const int register_size = 255;
 	void Return_Current_Directory();
 	void outputDisplay();
-	void outputInt();
 	void input();
 	void creatdir();
 	void changedir();

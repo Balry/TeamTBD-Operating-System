@@ -24,15 +24,18 @@ private:
 	std::string CommandInput()
 	{
 		std::string result;
-		char temp;
+		char* temp="";
 		do
 		{
 			mykenrel.Set_Register0(1);
 			mykenrel.Set_Register2(temp);
 			mykenrel.System_Call();
-			result += (char)mykenrel.Get_Register1();
+			temp = (char*)mykenrel.Get_Register1();
+			result += temp;
 		} while (temp != 0);
+		return result;
 	}
+
 	std::string transducer(std::string command)
 	{
 		try
@@ -45,7 +48,7 @@ private:
 			}
 			else if (token[0] == "cd")
 			{
-				if (token.size == 2)
+				if (token.size() == 2)
 				{
 					result = changeDir(token[1]);
 				}
@@ -53,7 +56,7 @@ private:
 			}
 			else if (token[0] == "copy")
 			{
-				if (token.size == 3)
+				if (token.size() == 3)
 				{
 					result = copyFile(token[1], token[2]);
 				}
@@ -61,12 +64,12 @@ private:
 			}
 			else if (token[0] == "delete")
 			{
-				if (token.size == 2){ result = deleteFile(token[1]); }
+				if (token.size() == 2){ result = deleteFile(token[1]); }
 				else throw(99);
 			}
 			else if (token[0] == "mkdir")
 			{
-				if (token.size == 2){ result = makeDir(token[1]); }
+				if (token.size() == 2){ result = makeDir(token[1]); }
 				else throw(99);
 			}
 			else if (token[0] == "dstat")
@@ -75,7 +78,7 @@ private:
 			}
 			else if (token[0] == "dfile")
 			{
-				if (token.size == 2){ result = fileContents(token[1]); }
+				if (token.size() == 2){ result = fileContents(token[1]); }
 				else throw(99);
 			}
 			else if (token[0] == "quit")
@@ -83,6 +86,7 @@ private:
 				result = quit();
 			}
 			else throw (100);
+			return result;
 		}
 		catch (int e)
 		{
@@ -100,6 +104,18 @@ private:
 			}
 		}
 	}
+	std::string changeDir(std::string name)
+	{
+		mykenrel.Set_Register0(4);
+		mykenrel.Set_Register1(name.c_str());
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register3() != 0)
+		{
+			throw mykenrel.Get_Register3();
+		}
+		std::string result = "Moved to new directory";
+		return result;
+	}
 	std::string getDir(std::string dir)
 	{
 		mykenrel.Set_Register0(13);
@@ -110,12 +126,11 @@ private:
 		}
 		return intToString(mykenrel.Get_Register1());
 	}
-	std::string changeDir(std::string newDir);
 	std::string copyFile(std::string fileName, std::string destination)
 	{
 		//open file
 		mykenrel.Set_Register0(7);
-		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.Set_Register1(fileName.c_str());
 		mykenrel.System_Call();
 		int e = mykenrel.Get_Register3();
 		if (e != 0)throw (e);
@@ -137,16 +152,16 @@ private:
 		if (e != 0)throw(e);
 		
 		//change dir
-		changeDir(destination);
+		changeDir(destination.c_str());
 
 		//create file and write file
 		mykenrel.Set_Register0(8);
-		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.Set_Register1(fileName.c_str());
 		mykenrel.System_Call();
 		e = mykenrel.Get_Register3();
 		if (e != 0)throw(e);
 		myfile = (FILE*)mykenrel.Get_Register1();
-		for (int i = 0; i < fileContent.length - 1;i++)
+		for (int i = 0; i < fileContent.length() - 1;i++)
 		{
 			mykenrel.Set_Register0(10);
 			mykenrel.Set_Register1(fileContent[i]);
@@ -175,7 +190,7 @@ private:
 	std::string fileContents(std::string fileName)
 	{
 		mykenrel.Set_Register0(7); //open file to read content
-		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.Set_Register1(fileName.c_str());
 		mykenrel.System_Call();
 		std::string filecontent;
 		if (mykenrel.Get_Register3() != 0)
@@ -183,20 +198,19 @@ private:
 			throw mykenrel.Get_Register3();
 		}
 				
-		FILE* file;
-				
+		FILE* file=(FILE*)mykenrel.Get_Register1();
 			do
 			{								//read file contents
 				mykenrel.Set_Register0(9);
 				mykenrel.Set_Register1(file);
 				mykenrel.System_Call();
-				if (mykenrel.Get_Register3 != 0)
+				if (mykenrel.Get_Register3() != 0)
 				{
 					throw mykenrel.Get_Register3();
 				}
 					
 					
-				filecontent = (char*)mykenrel.Get_Register1();
+				filecontent += (char)mykenrel.Get_Register1();
 			} while (!EOF);
 
 			mykenrel.Set_Register0(11);
@@ -229,15 +243,16 @@ private:
 	{
 		std::string results;
 		mykenrel.Set_Register0(3);
-		mykenrel.Set_Register1(dirName.c_str);
+		mykenrel.Set_Register1(dirName.c_str());
 		mykenrel.System_Call();
 		if (mykenrel.Get_Register3() != 0)throw(101);
 		results = dirName + " Created";
+		return results;
 	}
 	std::string deleteFile(std::string fileName)
 	{
 		mykenrel.Set_Register0(12);
-		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.Set_Register1(fileName.c_str());
 		mykenrel.System_Call();
 		if(mykenrel.Get_Register3() != 0)
 			throw mykenrel.Get_Register3();
@@ -246,7 +261,7 @@ private:
 	}
 	void output(std::string out)
 	{
-		for (int i = 0; i < out.length - 1; i++)
+		for (int i = 0; i < out.length() - 1; i++)
 		{
 			mykenrel.Set_Register0(2);
 			mykenrel.Set_Register1(out[i]);
@@ -260,7 +275,7 @@ private:
 		std::istringstream is(com);
 		while (!is.eof())
 		{
-			if (vs.size == 0)
+			if (vs.size() == 0)
 			{
 				getline(is, s, ' ');
 			}
@@ -273,19 +288,7 @@ private:
 		return vs;
 	}
 
-	std::string changeDir(std::string name)
-	{
-		mykenrel.Set_Register0(4);
-		mykenrel.Set_Register1(name);
-		mykenrel.changedir();
-		if (mykenrel.GetRegister3() != 0)
-		{
-			throw mykenrel.getRegister3();
-		}
-		std::string result = "Moved to new directory";
-		return result;
 
-	}
 	
 	//Auxiliary
 	std::string intToString(int x)

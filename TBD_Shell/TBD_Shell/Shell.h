@@ -182,33 +182,33 @@ private:
 		{
 			throw mykenrel.Get_Register3();
 		}
-				
-		FILE* file;
-				
-			do
-			{								//read file contents
-				mykenrel.Set_Register0(9);
-				mykenrel.Set_Register1(file);
-				mykenrel.System_Call();
-				if (mykenrel.Get_Register3 != 0)
-				{
-					throw mykenrel.Get_Register3();
-				}
-					
-					
-				filecontent = (char*)mykenrel.Get_Register1();
-			} while (!EOF);
 
-			mykenrel.Set_Register0(11);
+		FILE* file;
+
+		do
+		{								//read file contents
+			mykenrel.Set_Register0(9);
 			mykenrel.Set_Register1(file);
-			
 			mykenrel.System_Call();
-			if (mykenrel.Get_Register3() != 0)
+			if (mykenrel.Get_Register3 != 0)
 			{
 				throw mykenrel.Get_Register3();
 			}
 
-			return filecontent;
+
+			filecontent = (char*)mykenrel.Get_Register1();
+		} while (!EOF);
+
+		mykenrel.Set_Register0(11);
+		mykenrel.Set_Register1(file);
+
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register3() != 0)
+		{
+			throw mykenrel.Get_Register3();
+		}
+
+		return filecontent;
 	}
 	std::string systemInfo()
 	{

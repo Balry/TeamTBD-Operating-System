@@ -110,7 +110,6 @@ private:
 		}
 		return intToString(mykenrel.Get_Register1());
 	}
-	std::string changeDir(std::string newDir);
 	std::string copyFile(std::string fileName, std::string destination)
 	{
 		//open file
@@ -272,15 +271,14 @@ private:
 		}
 		return vs;
 	}
-
 	std::string changeDir(std::string newDir)
 	{
 		mykenrel.Set_Register0(4);
-		mykenrel.Set_Register1(newDir);
-		mykenrel.changedir();
-		if (mykenrel.GetRegister3() != 0)
+		mykenrel.Set_Register1(newDir.c_str);
+		mykenrel.System_Call();
+		if (mykenrel.Get_Register3() != 0)
 		{
-			throw mykenrel.getRegister3();
+			throw mykenrel.Get_Register3();
 		}
 		std::string result = "Moved to new directory";
 		return result;

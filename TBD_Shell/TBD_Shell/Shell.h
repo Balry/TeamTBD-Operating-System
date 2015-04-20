@@ -103,7 +103,7 @@ private:
 	}
 	std::string getDir(std::string dir)
 	{
-		mykenrel.Set_Register0(12);
+		mykenrel.Set_Register0(13);
 		mykenrel.System_Call();
 		if (mykenrel.Get_Register3() != 0)
 		{
@@ -147,7 +147,16 @@ private:
 		if (mykenrel.Get_Register3() != 0)throw(101);
 		results = dirName + " Created";
 	}
-	std::string deleteFile(std::string fileName);
+	std::string deleteFile(std::string fileName)
+	{
+		mykenrel.Set_Register0(12);
+		mykenrel.Set_Register1(fileName.c_str);
+		mykenrel.System_Call();
+		if(mykenrel.Get_Register3() != 0)
+			throw mykenrel.Get_Register3();
+		return "File deleted";
+
+	}
 	void output(std::string out)
 	{
 		for (int i = 0; i < out.length - 1; i++)

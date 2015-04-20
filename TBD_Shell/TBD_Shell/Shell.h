@@ -168,7 +168,8 @@ private:
 		for (int i = 0; i < fileContent.length();i++)
 		{
 			mykenrel.Set_Register0(10);
-			mykenrel.Set_Register1(fileContent[i]);
+			mykenrel.Set_Register1(myfile);
+			mykenrel.Set_Register2(fileContent[i]);
 			mykenrel.System_Call();
 			e = mykenrel.Get_Register3();
 			if (e != 0)throw(e);

@@ -11,9 +11,15 @@ public:
 	void CommanLineInterface()
 	{
 		std::string command;
+		char* dir = new char[256];
 		do
 		{
-			output("\n>");
+			mykenrel.Set_Register0(14);
+			mykenrel.Set_Register1(dir);
+			mykenrel.System_Call();
+			output("\n");
+			output(dir);
+			output(">");
 			command = CommandInput();
 			std::string result = transducer(command);
 			output(result);

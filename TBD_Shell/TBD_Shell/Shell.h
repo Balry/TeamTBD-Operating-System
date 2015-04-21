@@ -220,7 +220,7 @@ private:
 		}
 				
 		FILE* file=(FILE*)mykenrel.Get_Register1();
-		while (feof(file))
+		while (!feof(file))
 			{								//read file contents
 				mykenrel.Set_Register0(9);
 				mykenrel.Set_Register1(file);
@@ -231,7 +231,7 @@ private:
 				}
 					
 					
-				filecontent += (char)mykenrel.Get_Register1();
+				filecontent += (char)mykenrel.Get_Register2();
 			} 
 
 			mykenrel.Set_Register0(11);

@@ -13,7 +13,7 @@ public:
 		std::string command;
 		do
 		{
-			output(">");
+			output("\n>");
 			command = CommandInput();
 			std::string result = transducer(command);
 			output(result);

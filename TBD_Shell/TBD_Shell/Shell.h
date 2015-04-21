@@ -38,9 +38,9 @@ private:
 
 	std::string transducer(std::string command)
 	{
+		std::string result;
 		try
 		{
-			std::string result;
 			std::vector<std::string>token = makeToken(command);
 			if (token[0]=="dir")
 			{
@@ -92,26 +92,26 @@ private:
 			}
 			else
 			{
-				result += "Commands are: dir\ncd (name)\ncopy (fileName);(Destination)\ndelete (FileName)\nmkdir (Name)\ndeleteD (name)\ndstat\ndfile (name)\nquit\n";
 				throw (100);
 			}
-			return result;
 		}
 		catch (int e)
 		{
 			switch (e)
 			{
 			case(99):
-				output("Invalid Parameters\n");
+				result+=("Invalid Parameters\n");
 				break;
 			case(100) :
-				output("Invalid Command\n");
+				result += ("Invalid Command\n");
+				result += "Commands are: dir\ncd (name)\ncopy (fileName);(Destination)\ndelete (FileName)\nmkdir (Name)\ndeleteD (name)\ndstat\ndfile (name)\nquit\n";
 				break;
 			default:
-				output("System Error\n");
+				result += ("System Error\n");
 				break;
 			}
 		}
+		return result;
 	}
 	std::string changeDir(std::string name)
 	{

@@ -141,6 +141,8 @@ private:
 		mykenrel.Set_Register0(5);
 		mykenrel.Set_Register1(name.c_str());
 		mykenrel.System_Call();
+		int e = mykenrel.Get_Register3();
+		if (e != 0)throw(e);
 		return name + " was deleted";
 	}
 
@@ -218,7 +220,7 @@ private:
 		}
 				
 		FILE* file=(FILE*)mykenrel.Get_Register1();
-			do
+		while (feof(file))
 			{								//read file contents
 				mykenrel.Set_Register0(9);
 				mykenrel.Set_Register1(file);
@@ -230,7 +232,7 @@ private:
 					
 					
 				filecontent += (char)mykenrel.Get_Register1();
-			} while (!EOF);
+			} 
 
 			mykenrel.Set_Register0(11);
 			mykenrel.Set_Register1(file);

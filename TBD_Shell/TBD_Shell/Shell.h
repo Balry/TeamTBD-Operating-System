@@ -263,7 +263,7 @@ private:
 		}
 		std::string result = "Date ";
 		result += (char*)mykenrel.Get_Register1();
-		result += "time";
+		result += "; time ";
 		result += (char*)mykenrel.Get_Register2();
 		return result; //return contents of register 1 & 2 as strings
 		

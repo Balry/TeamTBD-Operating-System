@@ -67,6 +67,11 @@ private:
 				if (token.size() == 2){ result += deleteFile(token[1]); }
 				else throw(99);
 			}
+			else if (token[0] == "deleteD")
+			{
+				if (token.size() == 2){ result += deleteDirectory(token[1]); }
+				else throw(99);
+			}
 			else if (token[0] == "mkdir")
 			{
 				if (token.size() == 2){ result += makeDir(token[1]); }
@@ -87,7 +92,7 @@ private:
 			}
 			else
 			{
-				result += "Commands are: dir,cd,copy,delete,mkdir,dstat,dfile,quit\n";
+				result += "Commands are: dir\ncd (name)\ncopy (fileName);(Destination)\ndelete (FileName)\nmkdir (Name)\ndeleteD (name)\ndstat\ndfile (name)\nquit\n";
 				throw (100);
 			}
 			return result;
@@ -138,6 +143,17 @@ private:
 		}
 		return intToString(mykenrel.Get_Register1());
 	}
+
+	std::string deleteDirectory(std::string name)
+	{
+		mykenrel.Set_Register0(5);
+		mykenrel.Set_Register1(name.c_str());
+		mykenrel.System_Call();
+		int e = mykenrel.Get_Register3();
+		if (e != 0)throw(e);
+		return name + " was deleted";
+	}
+
 	std::string copyFile(std::string fileName, std::string destination)
 	{
 		//open file
@@ -212,7 +228,7 @@ private:
 		}
 				
 		FILE* file=(FILE*)mykenrel.Get_Register1();
-			do
+		while (feof(file))
 			{								//read file contents
 				mykenrel.Set_Register0(9);
 				mykenrel.Set_Register1(file);
@@ -224,7 +240,7 @@ private:
 					
 					
 				filecontent += (char)mykenrel.Get_Register1();
-			} while (!EOF);
+			} 
 
 			mykenrel.Set_Register0(11);
 			mykenrel.Set_Register1(file);

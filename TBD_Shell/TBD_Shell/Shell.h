@@ -117,7 +117,15 @@ private:
 		{
 			throw mykenrel.Get_Register3();
 		}
-		std::string result = "Moved to new directory";
+		if (name == ".")
+		{
+			return "Stayed in this directory";
+		}
+		if (name == "..")
+		{
+			return "Moved up a directory";
+		}
+		std::string result = "Moved to " + name + " directory";
 		return result;
 	}
 	std::string getDir()

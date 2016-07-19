@@ -1,3 +1,0 @@
-TeamTBD Operating System
-====================================
-This is a simple operating system
